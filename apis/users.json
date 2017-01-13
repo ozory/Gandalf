@@ -1,0 +1,21 @@
+{
+    "name":"users",
+    "version": 1.0,
+    "methods":
+    [
+        {
+            "name":"Insert",
+            "verb":"Post"
+        },
+        {
+            "name":"Update",
+            "auth":"Auth",
+            "verb":"Post"
+        },
+        {
+            "name":"GetByUnique",
+            "auth":"Auth",
+            "verb":"Get"
+        }
+    ]
+}

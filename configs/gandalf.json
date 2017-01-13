@@ -1,0 +1,11 @@
+{
+    "port": 3000,
+    "version": "0.0.1",
+    "AuthServers":
+    [
+        {
+            "name" : "Auth",
+            "service": "localhost:3000/Auth/"
+        }
+    ]
+}

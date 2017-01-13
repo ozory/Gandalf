@@ -1,0 +1,12 @@
+{
+    "name":"plans",
+    "version": 1.0,
+    "auth":"Auth",
+    "methods":
+    [
+        {
+            "name":"GetPlansByIsp",
+            "verb":"Get"
+        }
+    ]
+}
