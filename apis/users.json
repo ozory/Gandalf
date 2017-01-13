@@ -1,6 +1,13 @@
 {
     "name":"users",
-    "version": 1.0,
+    "version": "1.0",
+    "description" : "",
+    "servers":
+    [
+        {
+           "url":"http://localhost:3000/api/"
+        }
+    ],
     "methods":
     [
         {

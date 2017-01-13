@@ -1,4 +1,8 @@
 var arquivo = require('fs');
+var mongoose = require('mongoose');
+var schemas = require('./Schemas');
+
+var ApiSchema ;
 
 // Carrega as apis
 exports.LoadApis = function()
@@ -15,8 +19,12 @@ exports.LoadApis = function()
                     var content = JSON.parse(data);
                     arquivos.push(content);
 
-                    if(arquivos.length == files.length){
-                        return resolve(arquivos);
+                    if(arquivos.length == files.length)
+                    {
+                        CreateCollection(arquivos).then(function()
+                        {
+                            return resolve(true);
+                        });
                     }
                 }); 
             });
@@ -25,37 +33,55 @@ exports.LoadApis = function()
 }
 
 // Inspeciona um arquivo de API
-exports.Inspec = function(apiName, methodName, verb, Apis){
-
+exports.Inspec = function(apiName, methodName, verb, Apis)
+{
     return new Promise(function(resolve, reject){
 
         if(!apiName || !methodName || !verb){
-            return reject(err)
+            return resolve(404)
         }
         else
         {
-            Apis.filter(function(Apis)
-            {
-                if(Apis.name.toLowerCase() == apiName.toLowerCase())
-                {
-                    var methods = Apis.methods;
-                    var method;
-                    methods.filter(function (methods) 
-                    {
-                        if(methods.name.toLowerCase() == methodName.toLowerCase() && methods.verb.toLowerCase() == verb.toLowerCase())
-                        {
-                            method = methods;
-                            if(Apis.auth && Apis.auth != undefined && Apis.auth != "")
-                            {
-                                method.auth = Apis.auth;
-                            }
-                            return;
-                        }
-                        return;
-                    });
-                    return resolve(method);
+           var query =  ApiSchema.findOne({"name": apiName, "methods.name": methodName});
+           query.exec(function(err,data)
+           {
+                if (err || !data) return resolve(404);
+                
+                var serverToConnect ={
+                    url : data.servers[0].url,
+                    method : methodName
                 }
-            });
+                return resolve(JSON.stringify(serverToConnect));
+           });
         }
+    });
+}
+
+var CreateCollection = function(Apis)
+{
+    return new Promise(function(resolve, reject)
+    {
+        mongoose.connect("mongodb://localhost:27017/data/db/apis");
+        mongoose.Promise = global.Promise;
+
+        var db = mongoose.connection;
+        db.once('open', function() 
+        {
+            ApiSchema = schemas.GetApiSchema();
+            ApiSchema.collection.remove();
+            ApiSchema.collection.insert(Apis, onInsert);
+
+            function onInsert(err, data) 
+            {
+                if (err) 
+                {
+                    return resolve(false);// TODO: handle error
+                } 
+                else 
+                {
+                    return resolve(true);
+                }
+            }
+        });
     });
 }

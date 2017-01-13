@@ -2,11 +2,18 @@
     "name":"plans",
     "version": 1.0,
     "auth":"Auth",
+    "description" : "",
     "methods":
     [
         {
             "name":"GetPlansByIsp",
             "verb":"Get"
+        }
+    ],
+    "servers":
+    [
+        {
+           "url":"http://localhost:3000/api/"
         }
     ]
 }
