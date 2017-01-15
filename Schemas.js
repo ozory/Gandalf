@@ -19,6 +19,6 @@ exports.GetApiSchema = function(){
         }]
     });
 
-    var ApiSchema = mongoose.model('Apis', Schema);
+    var ApiSchema = mongoose.model('apis', Schema);
     return ApiSchema;
 }

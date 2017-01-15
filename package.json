@@ -1,8 +1,9 @@
 {
-    "name": "gandalf",
-    "version": "0.0.1",
-    "dependencies":
-    {
-        "mongoose": "*"
-    }
+  "name": "gandalf",
+  "version": "0.0.1",
+  "dependencies": {
+    "chokidar": "^1.6.1",
+    "hound": "^1.0.4",
+    "mongoose": "*"
+  }
 }

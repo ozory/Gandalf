@@ -1,4 +1,5 @@
 var http = require('http');
+var hound = require('hound');
 var service = require('./Services');
 var config = require('./Configuration');
 
@@ -17,17 +18,24 @@ var server = http.createServer(function(request,response)
     }
 });
 
-// Carrega a configuração
-var Init = function()
+var InitWatcher = function()
 {
-    config.loadConfig().then(function(configResult)
-    {
-        configFiles = configResult;
-        LoadApis(configFiles)
-    }).catch(function(err) 
-    {
-        console.log(err);
-   });
+    watcher = hound.watch('./apis');
+    watcher.on('change', function(file, stats) {
+        ResetWatcher(watcher);
+    });
+    watcher.on('create', function(file, stats) {
+        ResetWatcher();
+    });
+    watcher.on('delete', function(file, stats) {
+       ResetWatcher();
+    });
+}
+
+var ResetWatcher = function(watcher)
+{
+    Init();
+    watcher.clear();
 }
 
 // Carrega as Apis 
@@ -52,10 +60,24 @@ var InspecRequest = function(request, response)
 
     service.Inspec(Api , method , request.method, Apis).then(function(result)
     {
-        response.writeHead(result,{"Content-Type": "text/html"});
-        response.write("<h1>"+result+"</h1>");
+        response.writeHead(result.status,{"Content-Type": "text/html"});
+        response.write("<h1>"+result.message+"</h1>");
         response.end();
     });
+}
+
+// Carrega a configuração
+var Init = function()
+{
+    config.loadConfig().then(function(configResult)
+    {
+        configFiles = configResult;
+        LoadApis(configFiles);
+        InitWatcher();
+    }).catch(function(err) 
+    {
+        console.log(err);
+   });
 }
 
 Init();
