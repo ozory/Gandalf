@@ -1,7 +1,7 @@
 var http = require('http');
-var service = require('./Services');
-var config = require('./Configuration');
-var watcher = require('./Watcher');
+var service = require('./modules/services');
+var config = require('./modules/config');
+var watcher = require('./modules/watcher');
 
 var configFiles;
 
@@ -31,10 +31,10 @@ var ResetWatcher = function()
 // Carrega as Apis 
 var LoadApis = function()
 {
-    service.LoadApis().then(function(result)
+    service.LoadApis(configFiles.apis).then(function(result)
     {
         server.listen(configFiles.port);
-        console.log("Server iniciado...");
+        console.log("Gandalf is on the bridge...");
     }).catch(function(err) 
     {
         console.log(err);
