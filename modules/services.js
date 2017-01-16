@@ -38,8 +38,10 @@ exports.Inspec = function (apiName, methodName, verb)
             url: "",
             method: methodName,
             auth: "",
+            verb: verb,
             status: 404,
-            message: "Api e/ou método não encontrado."
+            message: "Api e/ou método não encontrado.",
+            headers: ""
         }
 
         if (!apiName || !methodName || !verb) 
@@ -57,7 +59,7 @@ exports.Inspec = function (apiName, methodName, verb)
                     {
                         if(method.name.toLowerCase() == methodName.toLowerCase() && method.verb.toLowerCase() == verb.toLowerCase())
                         {
-                            serverToConnect.url = api.servers[0].url;
+                            serverToConnect.url = api.servers[0].url+methodName;
                             serverToConnect.message = "Api encontrada";
                             serverToConnect.status = 200;
                             serverToConnect.auth = api.auth ? api.auth : method.auth ;
