@@ -19,10 +19,12 @@
             "verb":"Get"
         }
     ],
-     "servers":
+    "servers":
     [
         {
-           "url":"http://localhost:49225/api/"
+           "host":"http://localhost/",
+           "path":"api/users/",
+           "port":51251
         }
     ]
 }

@@ -1,18 +1,19 @@
 var querystring = require('querystring');
-var https = require('https');
+var http = require('http');
 
 
-exports.PerformRequest = function performRequest(host, method, data, headers, success) 
+exports.PerformRequest = function performRequest(request, data, headers, success) 
 {
     var dataString = JSON.stringify(data);
     var options = 
     {
-        host: host,
-        method: method,
-        headers: headers
+        host: request.host,
+        path: request.path,
+        method: request.verb,
+        port: request.port
     };
 
-    var req = https.request(options, function (res) 
+    var req = http.request(options, function (res) 
     {
         res.setEncoding('utf-8');
         var responseString = '';
