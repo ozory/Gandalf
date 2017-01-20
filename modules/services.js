@@ -29,49 +29,47 @@ exports.LoadApis = function (apisDirectory)
 }
 
 // Inspeciona um arquivo de API
-exports.Inspec = function (apiName, methodName, verb) 
+exports.Inspec = function (request) 
 {
+
+    var url = request.url;
+    var Api = request.url.split("/")[1];
+    var resource = request.url.split("/")[2];
+
     return new Promise(function (resolve, reject) 
     {
         var serverToConnect = 
         {
-            host: "",
-            path: "",
-            verb: verb,
-            port: 0,
+            uri: "",
+            method: request.method,
             status: 404,
             message: "Api e/ou método não encontrado.",
             headers: ""
         }
 
-        if (!apiName || !methodName || !verb) 
+        if (!Api || !resource || !request.method) 
         {
             return resolve(serverToConnect)
         }
-
         else 
         {
-
             Apis.filter(function(api)
             {
-                if(api.name.toLowerCase() == apiName.toLowerCase()){
-                    var methods = api.methods.filter(function(method)
+                if(api.name.toLowerCase() == Api.toLowerCase())
+                {
+                    var resources = api.resources.filter(function(resources)
                     {
-                        if(method.name.toLowerCase() == methodName.toLowerCase() && method.verb.toLowerCase() == verb.toLowerCase())
+                        if(resources.name.toLowerCase() == resource.toLowerCase() && resources.method.toLowerCase() == request.method.toLowerCase())
                         {
-                            serverToConnect.host = api.servers[0].host;
-                            serverToConnect.path = api.servers[0].path;
-                            serverToConnect.port = api.servers[0].port;
+                            serverToConnect.uri = api.servers[0].host + request.url;
                             serverToConnect.message = "Api encontrada";
                             serverToConnect.status = 200;
-                            serverToConnect.auth = api.auth ? api.auth : method.auth ;
-
+                            serverToConnect.auth = api.auth ? api.auth : resource.auth ;
                             return;
                         }
                     });
                 }
             });
-            
             return resolve(serverToConnect);
         }
 

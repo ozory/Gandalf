@@ -3,17 +3,17 @@
     "version": 1.0,
     "auth":"Auth",
     "description" : "",
-    "methods":
+    "resources":
     [
         {
             "name":"GetPlansByIsp",
-            "verb":"Get"
+            "method":"Get"
         }
     ],
     "servers":
     [
         {
-           "url":"http://localhost:3000/api/"
+          "host":"http://localhost:51251/api"
         }
     ]
 }

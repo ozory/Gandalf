@@ -2,29 +2,27 @@
     "name":"users",
     "version": "1.0",
     "description" : "Description...",
-    "methods":
+    "resources":
     [
         {
             "name":"Insert",
-            "verb":"Post"
+            "method":"Post"
         },
         {
             "name":"Update",
             "auth":"Auth",
-            "verb":"Post"
+            "method":"Post"
         },
         {
             "name":"GetByUnique",
             "auth":"Auth",
-            "verb":"Get"
+            "method":"Get"
         }
     ],
     "servers":
     [
         {
-           "host":"http://localhost/",
-           "path":"api/users/",
-           "port":51251
+           "host":"http://localhost:51251/api"
         }
     ]
 }

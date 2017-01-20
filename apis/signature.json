@@ -3,25 +3,25 @@
     "version": "1.0",
     "description" : "Teste de Apis!!!",
     "auth" : "Auth",
-    "methods":
+    "resources":
     [
         {
             "name":"Insert",
-            "verb":"Post"
+            "method":"Post"
         },
         {
             "name":"Update",
-            "verb":"Post"
+            "method":"Post"
         },
         {
             "name":"GetByUserUnique",
-            "verb":"Get"
+            "method":"Get"
         }
     ],
      "servers":
     [
         {
-           "url":"http://localhost:3000/api/"
+           "host":"http://localhost:51251/api"
         }
     ]
 }

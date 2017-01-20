@@ -2,6 +2,9 @@
   "name": "gandalf",
   "version": "0.0.1",
   "dependencies": {
-    "hound": "*"
+    "express": "^4.14.0",
+    "hound": "*",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1"
   }
 }

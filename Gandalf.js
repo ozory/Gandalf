@@ -1,79 +1,84 @@
-var http = require('http');
+var express = require('express');
+
 var service = require('./modules/services');
 var config = require('./modules/config');
 var watcher = require('./modules/watcher');
-var requester = require('./modules/requester');
+const request = require('request');
+
 
 var configFiles;
 var actualRequest;
+var app = express();
 
-// Inicia escuta do server
-var server = http.createServer(function(request,response)
-{
-    if(request.url !== '/favicon.ico')
-    {
-       InspecRequest( request, response );
-    }
-    else{
-        response.end();
-    }
+app.all('/*',function (req, res, next) {
+
+    service.Inspec(req).then(function (result) {
+        if (result.status == 200) {
+            
+            
+            
+            executeCall(result).then(function(body)
+            {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+               // res.status(200).json(body);
+                res.send(body);
+                res.end();
+            });
+        }
+    });
+    next();
 });
 
-var InitWatcher = function()
-{
-    watcher.InitWatch(configFiles.apis, ResetWatcher)
+var executeCall = function (result, response) {
+
+    return new Promise(function (resolve, reject) 
+    {
+        const options =
+            {
+                url: result.uri,
+                method: result.method,
+                headers:
+                {
+                    'Accept': 'application/json',
+                    'Accept-Charset': 'utf-8',
+                    'User-Agent': 'my-reddit-client'
+                }
+            };
+
+        request(options, function (err, res, body) {
+            return resolve(JSON.parse(body));
+        });
+    });
 }
 
-var ResetWatcher = function()
-{
+var initWatcher = function () {
+    watcher.InitWatch(configFiles.apis, resetWatcher)
+}
+
+var resetWatcher = function () {
     Init();
     watcher.Clear();
 }
 
 // Carrega as Apis 
-var LoadApis = function()
-{
-    service.LoadApis(configFiles.apis).then(function(result)
-    {
-        server.listen(configFiles.port);
+var loadApis = function () {
+    service.LoadApis(configFiles.apis).then(function (result) {
+        app.listen(configFiles.port);
         console.log("Gandalf is on the bridge...");
-    }).catch(function(err) 
-    {
+    }).catch(function (err) {
         console.log(err);
     });;
 }
 
-// Valida a chamada lendo o arquivo
-var InspecRequest = function(request, response)
-{
-    var url = request.url;
-    var Api = request.url.split("/")[1];
-    var method = request.url.split("/")[2];
-
-    actualRequest = request;
-    service.Inspec(Api , method , request.method).then(function(result)
-    {
-        var requestResponse = requester.PerformRequest(result, {}, request.headers, function(data){
-            response.writeHead(result.status,{"Content-Type": "text/html"});
-            response.write("<h1>"+result.message+"</h1>");
-        });
-        
-        response.end();
-    });
-}
-
 // Carrega a configuração
-var Init = function()
-{
-    config.loadConfig().then(function(configResult)
-    {
+var Init = function () {
+    config.loadConfig().then(function (configResult) {
         configFiles = configResult;
-        LoadApis();
-        InitWatcher();
-    }).catch(function(err) 
-    {
+        loadApis();
+        initWatcher();
+    }).catch(function (err) {
         console.log(err);
-   });
+    });
 }
 
 Init();
