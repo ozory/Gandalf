@@ -20,6 +20,11 @@ app.all('/*', function (req, res, next) {
             });
 
         }
+        else
+        {
+            res.status(result.status).send(result); 
+            next();
+        }
     });
 
 });
@@ -42,6 +47,7 @@ var executeCall = function (result, response) {
             return resolve(JSON.parse(body));
         });
     });
+
 }
 
 var initWatcher = function () {

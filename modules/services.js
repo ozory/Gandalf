@@ -34,7 +34,8 @@ exports.Inspec = function (request)
 
     var url = request.url;
     var Api = request.url.split("/")[1];
-    var resource = request.url.split("/")[2];
+    var version = request.url.split("/")[2];
+    var resource = request.url.split("/")[3];
 
     return new Promise(function (resolve, reject) 
     {
@@ -47,7 +48,7 @@ exports.Inspec = function (request)
             headers: ""
         }
 
-        if (!Api || !resource || !request.method) 
+        if (!Api || !resource || !request.method || !version) 
         {
             return resolve(serverToConnect)
         }
@@ -55,7 +56,7 @@ exports.Inspec = function (request)
         {
             Apis.filter(function(api)
             {
-                if(api.name.toLowerCase() == Api.toLowerCase())
+                if(api.name.toLowerCase() == Api.toLowerCase() && api.version.toLowerCase() == version.toLowerCase())
                 {
                     var resources = api.resources.filter(function(resources)
                     {
