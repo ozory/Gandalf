@@ -1,8 +1,9 @@
 const express = require('express');
+const request = require('request');
+
 const service = require('./modules/services');
 const config = require('./modules/config');
 const watcher = require('./modules/watcher');
-const request = require('request');
 
 
 var configFiles;
