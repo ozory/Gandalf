@@ -1,38 +1,31 @@
-var express = require('express');
-
-var service = require('./modules/services');
-var config = require('./modules/config');
-var watcher = require('./modules/watcher');
+const express = require('express');
+const service = require('./modules/services');
+const config = require('./modules/config');
+const watcher = require('./modules/watcher');
 const request = require('request');
 
 
 var configFiles;
-var actualRequest;
 var app = express();
 
-app.all('/*',function (req, res, next) {
+app.all('/*', function (req, res, next) {
 
     service.Inspec(req).then(function (result) {
         if (result.status == 200) {
-            
-            
-            
-            executeCall(result).then(function(body)
-            {
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-               // res.status(200).json(body);
-                res.send(body);
-                res.end();
+
+            executeCall(result).then(function (body) {
+                res.status(result.status).send(body); 
+                next();
             });
+
         }
     });
-    next();
+
 });
 
 var executeCall = function (result, response) {
 
-    return new Promise(function (resolve, reject) 
-    {
+    return new Promise(function (resolve, reject) {
         const options =
             {
                 url: result.uri,
@@ -40,8 +33,7 @@ var executeCall = function (result, response) {
                 headers:
                 {
                     'Accept': 'application/json',
-                    'Accept-Charset': 'utf-8',
-                    'User-Agent': 'my-reddit-client'
+                    'Accept-Charset': 'utf-8'
                 }
             };
 
